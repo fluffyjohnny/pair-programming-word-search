@@ -51,14 +51,45 @@ const verticalReverse = (y) => {
   return x;
 };
 
+const diagonalReverse = (y) => {
+  let x = diagonalArr(y);
+  x.map(x => x.reverse());
+  return x;
+};
+
+const join = (x, y) => {
+  const b = x(y).map(z => z.join(''));
+  return b;
+};
+
+
 
 const wordSearch = (letters, word) => {
+  // horizontal down
   const horizontalJoin = letters.map(ls => ls.join(''));
-  const verticalJoin =  transpose(letters).map(vs => vs.join(''));
-  const diagonalJoin = diagonalArr(letters).map(x => x.join(''));
-  const hRevJoin = horizontalReverse(letters).map(x => x.join(''));
-  const vRevJoin = verticalReverse(letters).map(x => x.join(''));
-  // could definitely refactor this
+
+  // vertical down
+  const verticalJoin =  join(transpose, letters);
+
+  // diagonal left to top, bottom to right
+  const diagonalJoin = join(diagonalArr, letters);
+
+  // diagonal top to left, right to bottom
+  const diagonal = diagonalArr(letters);
+  const diagonalR = diagonal.map(x => x.reverse());
+  const diagonalRJ = diagonalR.map(x => x.join(''));
+
+  // horizontal up
+  const hRevJoin = join(horizontalReverse, letters);
+
+  // vertical up
+  const vRevJoin = join(verticalReverse, letters);
+
+  // diagonal reversed top to right, left to bottom
+  const dRevJoin = join(diagonalReverse, letters);
+
+  // missing right to top, bottom to left
+  
 
   for (const l of horizontalJoin) {
     if (l.includes(word)) return true;
@@ -75,20 +106,28 @@ const wordSearch = (letters, word) => {
   for (const diag of diagonalJoin) {
     if (diag.includes(word)) return true;
   }
+  for (const diag of dRevJoin) {
+    if (diag.includes(word)) return true;
+  }
+  for (const diagr of diagonalRJ) {
+    if (diagr.includes(word)) return true;
+  }
   return false;
 };
 
-// wordSearch([
-//   ['A', 'W', 'C', 'F', 'Q', 'U', 'A', 'L'],
-//   ['S', 'E', 'I', 'N', 'F', 'E', 'L', 'D'],
-//   ['Y', 'F', 'C', 'F', 'Q', 'U', 'A', 'L'],
-//   ['H', 'M', 'J', 'T', 'E', 'V', 'R', 'G'],
-//   ['W', 'H', 'C', 'S', 'Y', 'E', 'R', 'L'],
-//   ['B', 'F', 'R', 'E', 'N', 'E', 'Y', 'B'],
-//   ['U', 'B', 'T', 'W', 'A', 'P', 'A', 'I'],
-//   ['O', 'D', 'C', 'A', 'K', 'U', 'A', 'S'],
-//   ['E', 'Z', 'K', 'F', 'Q', 'U', 'A', 'L'],
-// ]);
+wordSearch([
+  ['A', 'W', 'C', 'F', 'Q', 'U', 'A', 'L'],
+  ['S', 'E', 'I', 'N', 'F', 'E', 'L', 'D'],
+  ['Y', 'F', 'C', 'F', 'Q', 'U', 'A', 'L'],
+  ['H', 'M', 'J', 'T', 'E', 'V', 'R', 'G'],
+  ['W', 'H', 'C', 'S', 'Y', 'E', 'R', 'L'],
+  ['B', 'F', 'R', 'E', 'N', 'E', 'Y', 'B'],
+  ['U', 'B', 'T', 'W', 'A', 'P', 'A', 'I'],
+  ['O', 'D', 'C', 'A', 'K', 'U', 'A', 'S'],
+  ['E', 'Z', 'K', 'F', 'Q', 'U', 'A', 'L'],
+]);
+
+
 
 module.exports = wordSearch;
 
